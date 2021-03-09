@@ -1,3 +1,21 @@
+#################################################################################
+#
+# The sample scripts are not supported under any Microsoft standard support
+# program or service. The sample scripts are provided AS IS without warranty
+# of any kind. Microsoft further disclaims all implied warranties including, without
+# limitation, any implied warranties of merchantability or of fitness for a particular
+# purpose. The entire risk arising out of the use or performance of the sample scripts
+# and documentation remains with you. In no event shall Microsoft, its authors, or
+# anyone else involved in the creation, production, or delivery of the scripts be liable
+# for any damages whatsoever (including, without limitation, damages for loss of business
+# profits, business interruption, loss of business information, or other pecuniary loss)
+# arising out of the use of or inability to use the sample scripts or documentation,
+# even if Microsoft has been advised of the possibility of such damages.
+#
+#################################################################################
+
+# Version 21.03.09.1815
+
 # Checks for signs of exploit from CVE-2021-26855, 26858, 26857, and 27065.
 #
 # Examples
@@ -5,7 +23,7 @@
 # Check the local Exchange server only and save the report:
 # .\Test-ProxyLogon.ps1 -OutPath $home\desktop\logs
 #
-# Check the local Exchange server, copy the files and folders to the outpath\<ComputerName>\ path
+# Check the local Exchange server, copy the files and logs to the outpath\<ComputerName>\ path
 # .\Test-ProxyLogon.ps1 -OutPath $home\desktop\logs -CollectFiles
 #
 # Check all Exchange servers and save the reports:
@@ -45,20 +63,28 @@ process {
         <#
 	.SYNOPSIS
 		Checks targeted exchange servers for signs of ProxyLogon vulnerability compromise.
+
 	.DESCRIPTION
 		Checks targeted exchange servers for signs of ProxyLogon vulnerability compromise.
 		Will do so in parallel if more than one server is specified, so long as names aren't provided by pipeline.
+
 		The vulnerabilities are described in CVE-2021-26855, 26858, 26857, and 27065
+
 	.PARAMETER ComputerName
 		The list of server names to scan for signs of compromise.
 		Do not provide these by pipeline if you want parallel processing.
+
 	.PARAMETER Credential
 		Credentials to use for remote connections.
+
 	.EXAMPLE
 		PS C:\> Test-ExchangeProxyLogon
+
 		Scans the current computer for signs of ProxyLogon vulnerability compromise.
+
 	.EXAMPLE
 		PS C:\> Test-ExchangeProxyLogon -ComputerName (Get-ExchangeServer).Fqdn
+
 		Scans all exchange servers in the organization for ProxyLogon vulnerability compromises
 #>
         [CmdletBinding()]
@@ -261,15 +287,20 @@ process {
         <#
 	.SYNOPSIS
 		Processes output of Test-ExchangeProxyLogon for reporting on the console screen.
+
 	.DESCRIPTION
 		Processes output of Test-ExchangeProxyLogon for reporting on the console screen.
+
 	.PARAMETER InputObject
 		The reports provided by Test-ExchangeProxyLogon
+
 	.PARAMETER OutPath
 		Path to a FOLDER in which to generate output logfiles.
 		This command will only write to the console screen if no path is provided.
+
 	.EXAMPLE
 		PS C:\> Test-ExchangeProxyLogon -ComputerName (Get-ExchangeServer).Fqdn | Write-ProxyLogonReport -OutPath C:\logs
+
 		Gather data from all exchange servers in the organization and write a report to C:\logs
 #>
         [CmdletBinding()]
@@ -450,7 +481,7 @@ process {
                             New-Item "$($LogFileOutPath)\SuspiciousFiles" -ItemType Directory -Force | Out-Null
                         }
                         foreach ($entry in $report.Suspicious) {
-                            if (Test-Path -Path $entry.path) {
+                            if (Test-Path -Path $entry.Path) {
                                 Write-Host "  Copying $($entry.Path) to $($LogFileOutPath)\SuspiciousFiles" -ForegroundColor Green
                                 Copy-Item -Path $entry.Path -Destination "$($LogFileOutPath)\SuspiciousFiles"
                             } else {
